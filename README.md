@@ -15,7 +15,7 @@ from API import Aktiedysten_API
 
 account = Aktiedysten_API("Username", "Password", "Game")
 ```
-### All functions
+## All functions
 ```py
 account.Buy()
 account.Sell()
