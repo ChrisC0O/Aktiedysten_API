@@ -1,5 +1,6 @@
 # Aktiedysten_API
-API for the website: www.aktiedysten.dk
+This code is used to access the website: www.aktiedysten.dk.
+You can buy, sell and more using simple commands.
 
 
 ## How to use:
