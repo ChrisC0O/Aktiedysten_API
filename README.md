@@ -5,7 +5,7 @@ You can buy, sell and more using simple commands.
 
 ## How to use:
 
-  - Start by going to the Aktiedysten website and make an account.
+  - Start by going to the Aktiedysten.dk and make an account.
   - Download the API.py.
   - Make a new .py file and import the Aktiedysten_API.
   - Insert your login info.
