@@ -43,4 +43,4 @@ while True:
   account.Buy("CRYPTO", "BTC", 10, "STOCK")
   sleep(1)
 ```
-# Script buys 1 BTC every second
+### Script buys 1 BTC every second
