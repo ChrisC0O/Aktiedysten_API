@@ -32,3 +32,15 @@ returns:
 ```py
 {'Confirmed': True, 'Game': 'GAME', 'Stock': 'BTC', 'Exchange': 'CRYPTO', 'OrderInStock': '10', 'OrderInCurrency': '2013118.9090987504', 'OrderType': 'Buy'}
 ```
+## Simble tradebot exsample:
+
+```py
+from time import sleep
+
+account = Aktiedysten_API("Username", "Password", "Game")
+
+while True:
+  account.Buy("CRYPTO", "BTC", 10, "STOCK")
+  sleep(1)
+```
+# Script buys 1 BTC every second
