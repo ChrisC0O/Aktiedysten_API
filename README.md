@@ -5,9 +5,10 @@ You can buy, sell and more using simple commands.
 
 ## How to use:
 
-  - Start by going to the Aktiedysten.dk and make an account.
+  - Start by going to the Aktiedysten.dk
+  - Make an account.
   - Download the API.py.
-  - Make a new .py file and import the Aktiedysten_API.
+  - Call the script.
   - Insert your login info.
 
 ## Code exsample:
@@ -28,7 +29,7 @@ account.Sell_All()
 account = Aktiedysten_API("Username", "Password", "Game")
 account.Buy("CRYPTO", "BTC", 10, "STOCK")
 ```
-returns:
+Returns Json:
 ```py
 {'Confirmed': True, 'Game': 'GAME', 'Stock': 'BTC', 'Exchange': 'CRYPTO', 'OrderInStock': '10', 'OrderInCurrency': '2013118.9090987504', 'OrderType': 'Buy'}
 ```
@@ -40,7 +41,7 @@ from time import sleep
 account = Aktiedysten_API("Username", "Password", "Game")
 
 while True:
-  account.Buy("CRYPTO", "BTC", 10, "STOCK")
+  account.Buy("CRYPTO", "BTC", 1, "STOCK")
   sleep(1)
 ```
-### Script buys 1 BTC every second
+Script buys 1 BTC every second
