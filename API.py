@@ -316,5 +316,32 @@ class Aktiedysten_API:
         except UnboundLocalError:
 
             raise ValueError(
-                f"The Stock [{user_input_ticker.upper()}] does not exist in portfolio"
-            )
+                f"The Stock [{user_input_ticker.upper()}] does not exist in portfolio")
+
+
+    def GetGameJson(self):
+
+        data = self.s.get(f"https://aktiedysten.dk/a/my_portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
+        data = json.loads(data)
+
+        return data
+
+    def GetCurrencyInBank(self):
+
+        total_in_account = self.s.get(f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
+        total_in_account = json.loads(total_in_account)
+
+        return total_in_account["Total"]
+
+    def GetInitialAmount(self):
+
+        InitialAmount = self.s.get(f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
+        InitialAmount = json.loads(InitialAmount)
+
+        return InitialAmount["Portfolio"]["Game"]["InitialAmount"]
+
+    def GetUserHistory(self):
+
+        history = self.s.get(f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
+        history = json.loads(history)
+        return history
