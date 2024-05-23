@@ -20,7 +20,11 @@ class Aktiedysten_API:
         self.s.post("https://aktiedysten.dk/a/ua/login", self.login_info)
 
         # Finds game PortfolioId
-        games_id_json = json.loads(self.s.get("https://aktiedysten.dk/a/my_games").text)
+        try:
+            games_id_json = json.loads(self.s.get("https://aktiedysten.dk/a/my_games").text)
+        except:
+            raise ValueError(
+                f"Error password or username not correct.")
 
         for elements in games_id_json:
             game_id = elements["Id"]
