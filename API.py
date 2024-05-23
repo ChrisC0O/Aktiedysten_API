@@ -13,18 +13,18 @@ class Aktiedysten_API:
             "lang": "da"
         }
 
-        # Login to Aktiedysten.dk
+        # Prepping login info
         self.login_info = login_data
         self.game = game
         self.s = requests.Session()
-        self.s.post("https://aktiedysten.dk/a/ua/login", self.login_info)
-
-        # Finds game PortfolioId
-        try:
-            games_id_json = json.loads(self.s.get("https://aktiedysten.dk/a/my_games").text)
-        except:
+        
+        # Login to Aktiedysten.dk and Validates if login was successful
+        if self.s.post("https://aktiedysten.dk/a/ua/login", self.login_info).status_code != 200:
             raise ValueError(
                 f"Error password or username not correct.")
+
+        # Finds game PortfolioId
+        games_id_json = json.loads(self.s.get("https://aktiedysten.dk/a/my_games").text)
 
         for elements in games_id_json:
             game_id = elements["Id"]
