@@ -120,7 +120,7 @@ class Aktiedysten_API:
         buy_with_amount = str(buy_with_amount)
         method = method.upper()
 
-        if method != "CURRENCY" or method != "STOCK":
+        if method != "CURRENCY" and method != "STOCK":
             raise ValueError(
                 f"Error CURRENCY or STOCK not spelled right")
 
@@ -198,7 +198,7 @@ class Aktiedysten_API:
         buy_with_amount = str(buy_with_amount)
         method = method.upper()
 
-        if method != "CURRENCY" or method != "STOCK":
+        if method != "CURRENCY" and method != "STOCK":
             raise ValueError(
                 f"Error CURRENCY or STOCK not spelled right")
 
