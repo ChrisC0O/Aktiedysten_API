@@ -120,12 +120,9 @@ class Aktiedysten_API:
         buy_with_amount = str(buy_with_amount)
         method = method.upper()
 
-        if method == "CURRENCY" or method == "STOCK":
-            pass
-
-        else:
-            print("Error CURRENCY or STOCK not spelled right")
-            quit()
+        if method != "CURRENCY" or method != "STOCK":
+            raise ValueError(
+                f"Error CURRENCY or STOCK not spelled right")
 
         stock_data = self.s.get(
             f"https://aktiedysten.dk/a/trade_portfolio_options?portfolio_id={self.portfolio_id}&exchange={exchange}&ticker={ticker}")
@@ -201,12 +198,9 @@ class Aktiedysten_API:
         buy_with_amount = str(buy_with_amount)
         method = method.upper()
 
-        if method == "CURRENCY" or method == "STOCK":
-            None
-
-        else:
-            print("Error CURRENCY or STOCK not spelled right")
-            quit()
+        if method != "CURRENCY" or method != "STOCK":
+            raise ValueError(
+                f"Error CURRENCY or STOCK not spelled right")
 
         stock_data = self.s.get(
             f"https://aktiedysten.dk/a/trade_portfolio_options?portfolio_id={self.portfolio_id}&exchange={exchange}&ticker={ticker}")
