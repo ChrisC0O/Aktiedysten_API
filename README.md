@@ -23,6 +23,10 @@ account.Buy()
 account.Sell()
 account.Liquidate_Game()
 account.Sell_All()
+account.GetGameJson()
+account.GetCurrencyInBank()
+account.GetInitialAmount()
+account.GetUserHistory()
 ```
 ## Buying 10 BTC using the code:
 ```py
