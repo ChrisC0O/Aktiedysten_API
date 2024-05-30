@@ -364,7 +364,7 @@ class AktiedystenAPI:
         :param markets_to_exclude: By default games will be created with all markets. Set this to exclude markets.
         You can choose from: ["DK_STOCK", "US_STOCK", "DE_STOCK", "SE_STOCK", "FI_STOCK", "IS_STOCK", "COMMODITIES",
                             "FOREX", "CRYPTOCURRENCIES"]
-        :return:
+        :return: Returns True if the game was created successfully, else return False.
         """
 
         def make_unix_end_day(days):
