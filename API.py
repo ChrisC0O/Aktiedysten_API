@@ -344,10 +344,10 @@ class AktiedystenAPI:
 
     def create_new_game(self,
                         name: str,
+                        amount: int,
                         currency: str,
                         days_to_end: int,
                         brokerage_pct: float,
-                        amount: int,
                         max_amount_per_stock=None,
                         volume_multiplier=None,
                         markets_to_exclude=None):
