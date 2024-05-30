@@ -1,7 +1,10 @@
+import urllib.parse
 import requests
+import time
 import json
 
-class Aktiedysten_API:
+
+class AktiedystenAPI:
 
     def __init__(self, email, password, game):
 
@@ -17,7 +20,7 @@ class Aktiedysten_API:
         self.login_info = login_data
         self.game = game
         self.s = requests.Session()
-        
+
         # Login to Aktiedysten.dk and Validates if login was successful
         if self.s.post("https://aktiedysten.dk/a/ua/login", self.login_info).status_code != 200:
             raise ValueError(
@@ -31,7 +34,7 @@ class Aktiedysten_API:
             portfolio_id = elements['PortfolioId']
 
             game_name = json.loads(
-            self.s.get(f"https://aktiedysten.dk/z/game_info?game_id={game_id}&portfolio_id={portfolio_id}").text)
+                self.s.get(f"https://aktiedysten.dk/z/game_info?game_id={game_id}&portfolio_id={portfolio_id}").text)
 
             if game_name["State"] == 'started' and game_name["Name"] == self.game:
                 self.game_id = game_id
@@ -44,10 +47,9 @@ class Aktiedysten_API:
 
         except AttributeError:
             raise ValueError(
-            f"Error the game [{game}] does not exist.")
+                f"Error the game [{game}] does not exist.")
 
-
-    def Amount_To_Sum(self, BuyWithAmount, data, minus):
+    def amount_to_sum(self, BuyWithAmount, data, minus):
 
         """
         Used for converting "STOCK" to "CURRENCY"
@@ -84,7 +86,7 @@ class Aktiedysten_API:
 
             return final_price
 
-    def Sum_To_Amount(self, BuyWithAmount, data):
+    def sum_to_amount(self, BuyWithAmount, data):
 
         """
         Used for converting "CURRENCY" to "STOCK"
@@ -102,8 +104,7 @@ class Aktiedysten_API:
 
         return new_amount
 
-
-    def Buy(self, exchange, ticker, buy_with_amount, method):
+    def buy(self, exchange, ticker, buy_with_amount, method):
 
         """
         Buys a stock of your choosing.
@@ -133,11 +134,11 @@ class Aktiedysten_API:
 
         if method == "CURRENCY":
             buy_with_amount_currency = buy_with_amount
-            buy_with_amount_amount = str(self.Sum_To_Amount(buy_with_amount, stock_data))
+            buy_with_amount_amount = str(self.sum_to_amount(buy_with_amount, stock_data))
             buy_with_amount = buy_with_amount_currency
 
         if method == "STOCK":
-            buy_with_amount_currency = str(self.Amount_To_Sum(buy_with_amount, stock_data, False))
+            buy_with_amount_currency = str(self.amount_to_sum(buy_with_amount, stock_data, False))
             buy_with_amount_amount = buy_with_amount
             buy_with_amount = buy_with_amount_currency
 
@@ -181,8 +182,7 @@ class Aktiedysten_API:
 
             return return_file
 
-
-    def Sell(self, exchange, ticker, buy_with_amount, method):
+    def sell(self, exchange, ticker, buy_with_amount, method):
 
         """
         Sells a stock of your choosing.
@@ -211,15 +211,13 @@ class Aktiedysten_API:
 
         if method == "CURRENCY":
             buy_with_amount_currency = buy_with_amount
-            buy_with_amount_amount = str(self.Sum_To_Amount(buy_with_amount, stock_data))
+            buy_with_amount_amount = str(self.sum_to_amount(buy_with_amount, stock_data))
             buy_with_amount = buy_with_amount_amount
 
         if method == "STOCK":
-            buy_with_amount_currency = str(self.Amount_To_Sum(buy_with_amount, stock_data, True))
+            buy_with_amount_currency = str(self.amount_to_sum(buy_with_amount, stock_data, True))
             buy_with_amount_amount = buy_with_amount
             buy_with_amount = buy_with_amount_amount
-
-
 
         rq = '{"PortfolioId":!"#,"Exchange":"€%&","Ticker":"/()","SellQuantity":=?!,"DoEnqueue":false}'
         rq = rq.replace('!"#', str(self.portfolio_id))
@@ -258,8 +256,7 @@ class Aktiedysten_API:
 
             return return_file
 
-
-    def Liquidate_Game(self):
+    def liquidate_game(self):
 
         """
         Liquidates your portfolio
@@ -282,12 +279,12 @@ class Aktiedysten_API:
             if self.bankrollcurrency == ticker:
                 continue
 
-            data = self.Sell(exchange, ticker, quantity, "STOCK")
+            data = self.sell(exchange, ticker, quantity, "STOCK")
             order_data.append(data)
 
         return order_data
 
-    def Sell_All(self, ticker):
+    def sell_all(self, ticker):
 
         """
         Sells all stock of a given ticker
@@ -307,7 +304,7 @@ class Aktiedysten_API:
             quantity = float((i["Quantity"]))
 
             if user_input_ticker == ticker:
-                order_data = self.Sell(exchange, ticker, quantity, "STOCK")
+                order_data = self.sell(exchange, ticker, quantity, "STOCK")
 
         try:
             return order_data
@@ -316,30 +313,97 @@ class Aktiedysten_API:
             raise ValueError(
                 f"The Stock [{user_input_ticker.upper()}] does not exist in portfolio")
 
-
-    def GetGameJson(self):
+    def get_game_json(self):
 
         data = self.s.get(f"https://aktiedysten.dk/a/my_portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
         data = json.loads(data)
 
         return data
 
-    def GetCurrencyInBank(self):
+    def get_currency_in_bank(self):
 
-        total_in_account = self.s.get(f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
+        total_in_account = self.s.get(
+            f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
         total_in_account = json.loads(total_in_account)
 
         return total_in_account["Total"]
 
-    def GetInitialAmount(self):
+    def get_initial_amount(self):
 
-        InitialAmount = self.s.get(f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
+        InitialAmount = self.s.get(
+            f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
         InitialAmount = json.loads(InitialAmount)
 
         return InitialAmount["Portfolio"]["Game"]["InitialAmount"]
 
-    def GetUserHistory(self):
+    def get_user_history(self):
 
         history = self.s.get(f"https://aktiedysten.dk/z/portfolio_assets?portfolio_id={self.portfolio_id}&lang=da").text
         history = json.loads(history)
         return history
+
+    def create_new_game(self,
+                        name: str,
+                        currency: str,
+                        days_to_end: int,
+                        brokerage_pct: float,
+                        amount: int,
+                        max_amount_per_stock=None,
+                        volume_multiplier=None,
+                        markets_to_exclude=None):
+
+        """
+        Creates a new game.
+        :param name: Name of the game you want to create.
+        :param currency: Game currency.
+        :param days_to_end: In how many days should the game end.
+        :param brokerage_pct: Games brokerage percentage.
+        :param amount: Amount of money.
+        :param max_amount_per_stock: Max amount you can buy stock from.
+        :param volume_multiplier: Trade with real world volume.
+        :param markets_to_exclude: By default games will be created with all markets. Set this to exclude markets.
+        You can choose from: ["DK_STOCK", "US_STOCK", "DE_STOCK", "SE_STOCK", "FI_STOCK", "IS_STOCK", "COMMODITIES",
+                            "FOREX", "CRYPTOCURRENCIES"]
+        :return:
+        """
+
+        def make_unix_end_day(days):
+            return time.time() + (days * 86400)
+
+        def url_encode(text):
+            return urllib.parse.quote(text, encoding="utf-8")
+
+        markets = ["DK_STOCK", "US_STOCK", "DE_STOCK", "SE_STOCK", "FI_STOCK", "IS_STOCK", "COMMODITIES", "FOREX",
+                   "CRYPTOCURRENCIES"]
+
+        name = url_encode(name)
+        end_time = make_unix_end_day(days_to_end)
+        currency = currency.upper()
+
+        if max_amount_per_stock is None:
+            max_amount_per_stock = 0
+
+        if volume_multiplier is True:
+            volume_multiplier = "&volume_multiplier=1"
+        else:
+            volume_multiplier = ""
+
+        if markets_to_exclude is not None:
+            for i in markets_to_exclude:
+                markets.remove(i)
+
+        marked_payload = ""
+        for i in markets:
+            marked_payload += f'%22{i}%22%2C'
+
+        marked_payload = marked_payload[0:-3]
+        marked_payload = f'%5B{marked_payload}%5D'
+
+        payload = f"name={name}&amount_currency={currency}&end_ts={round(end_time, 3)}" \
+                  f"&brokerage_pct={brokerage_pct}&amount={amount}&markets={marked_payload}" \
+                  f"&pay_dividends=0&max_amount_per_stock={max_amount_per_stock}{volume_multiplier}"
+
+        if self.s.post(f"https://aktiedysten.dk/a/new_game?{payload}").status_code == 200:
+            return True
+        else:
+            return False
