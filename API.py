@@ -49,6 +49,12 @@ class AktiedystenAPI:
             raise ValueError(
                 f"Error the game [{game}] does not exist.")
 
+    def make_unix_end_day(self, days):
+        return time.time() + (days * 86400)
+
+    def url_encode(self, text):
+        return urllib.parse.quote(text, encoding="utf-8")
+
     def amount_to_sum(self, BuyWithAmount, data, minus):
 
         """
@@ -367,37 +373,36 @@ class AktiedystenAPI:
         :return: Returns True if the game was created successfully, else return False.
         """
 
-        def make_unix_end_day(days):
-            return time.time() + (days * 86400)
-
-        def url_encode(text):
-            return urllib.parse.quote(text, encoding="utf-8")
-
-        markets = ["DK_STOCK", "US_STOCK", "DE_STOCK", "SE_STOCK", "FI_STOCK", "IS_STOCK", "COMMODITIES", "FOREX",
-                   "CRYPTOCURRENCIES"]
-
-        name = url_encode(name)
-        end_time = make_unix_end_day(days_to_end)
+        name = self.url_encode(name)
+        end_time = self.make_unix_end_day(days_to_end)
         currency = currency.upper()
+        marked_payload = ""
+        volume_multiplier = ""
+
+        markets = ["DK_STOCK",
+                   "US_STOCK",
+                   "DE_STOCK",
+                   "SE_STOCK",
+                   "FI_STOCK",
+                   "IS_STOCK",
+                   "COMMODITIES",
+                   "FOREX",
+                   "CRYPTOCURRENCIES"]
 
         if max_amount_per_stock is None:
             max_amount_per_stock = 0
 
         if volume_multiplier is True:
             volume_multiplier = "&volume_multiplier=1"
-        else:
-            volume_multiplier = ""
 
         if markets_to_exclude is not None:
             for i in markets_to_exclude:
                 markets.remove(i)
 
-        marked_payload = ""
         for i in markets:
             marked_payload += f'%22{i}%22%2C'
 
-        marked_payload = marked_payload[0:-3]
-        marked_payload = f'%5B{marked_payload}%5D'
+        marked_payload = f'%5B{marked_payload[0:-3]}%5D'
 
         payload = f"name={name}&amount_currency={currency}&end_ts={round(end_time, 3)}" \
                   f"&brokerage_pct={brokerage_pct}&amount={amount}&markets={marked_payload}" \
