@@ -20,7 +20,7 @@ You can buy, sell and more using simple commands.
 
 ## Code exsample:
 
-#### Login
+#### Login:
 ```py
 from API import AktiedystenAPI
 
