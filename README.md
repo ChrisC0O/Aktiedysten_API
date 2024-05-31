@@ -34,7 +34,7 @@ account.buy("CRYPTO", "BTC", 10, "STOCK")
 
 #### Sell 10 BTC:
 ```py
-account.buy("CRYPTO", "BTC", 10, "STOCK")
+account.sell("CRYPTO", "BTC", 10, "STOCK")
 ```
 
 #### Sell everything in portfolio:
