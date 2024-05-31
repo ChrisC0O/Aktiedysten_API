@@ -42,9 +42,9 @@ account.sell("CRYPTO", "BTC", 10, "STOCK")
 account.liquidate_game()
 ```
 
-#### Sell everything of a given stock:
+#### Sell all of a given stock:
 ```py
-account.sell_all()
+account.sell_all("ticker")
 ```
 
 
