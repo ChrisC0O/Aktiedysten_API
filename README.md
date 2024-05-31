@@ -19,32 +19,40 @@ You can buy, sell and more using simple commands.
   - Insert your login info.
 
 ## Code exsample:
+
+#### Login
 ```py
 from API import AktiedystenAPI
 
 account = AktiedystenAPI("Username", "Password", "Game")
 ```
-## All functions
+
+#### Buying 10 BTC:
 ```py
-account.buy()
-account.sell()
-account.liquidate_game()
-account.sell_all()
-account.create_new_game()
-account.get_game_json()
-account.get_currency_in_bank()
-account.get_initial_amount()
-account.get_user_history()
-```
-## Buying 10 BTC using the code:
-```py
-account = AktiedystenAPI("Username", "Password", "Game")
 account.buy("CRYPTO", "BTC", 10, "STOCK")
 ```
-Returns Json:
+
+#### Sell 10 BTC:
+```py
+account.buy("CRYPTO", "BTC", 10, "STOCK")
+```
+
+#### Sell everything in portfolio:
+```py
+account.liquidate_game()
+```
+
+#### Sell everything of a given stock:
+```py
+account.sell_all()
+```
+
+
+All functions returns order json:
 ```py
 {'Confirmed': True, 'Game': 'GAME', 'Stock': 'BTC', 'Exchange': 'CRYPTO', 'OrderInStock': '10', 'OrderInCurrency': '2013118.9090987504', 'OrderType': 'Buy'}
 ```
+
 ## Simble tradebot exsample:
 
 ```py
@@ -57,3 +65,16 @@ while True:
   sleep(1)
 ```
 Script buys 1 BTC every second
+
+## All functions
+```py
+account.buy()
+account.sell()
+account.liquidate_game()
+account.sell_all()
+account.create_new_game()
+account.get_game_json()
+account.get_currency_in_bank()
+account.get_initial_amount()
+account.get_user_history()
+```
