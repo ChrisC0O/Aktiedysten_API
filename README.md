@@ -4,7 +4,7 @@ You can buy, sell and more using simple commands.
 
 ## News:
 > Code has been made more pythonic.
-> This might cause scripts to crash, therefore check if your script needs refactoring.
+> This might cause old scripts to crash, therefore check if your script needs refactoring.
 
 > Added a create_new_game() feature!
 
