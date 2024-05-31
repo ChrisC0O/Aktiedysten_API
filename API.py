@@ -349,7 +349,7 @@ class AktiedystenAPI:
                         days_to_end: int,
                         brokerage_pct: float,
                         max_amount_per_stock=None,
-                        volume_multiplier=None,
+                        volume_multiplier=False,
                         markets_to_exclude=None):
 
         """
@@ -360,7 +360,7 @@ class AktiedystenAPI:
         :param brokerage_pct: Games brokerage percentage.
         :param amount: Amount of money.
         :param max_amount_per_stock: Max amount you can buy stock from.
-        :param volume_multiplier: Trade with real world volume.
+        :param volume_multiplier: Trade with real world volume (Default is False).
         :param markets_to_exclude: By default games will be created with all markets. Set this to exclude markets.
         You can choose from: ["DK_STOCK", "US_STOCK", "DE_STOCK", "SE_STOCK", "FI_STOCK", "IS_STOCK", "COMMODITIES",
                             "FOREX", "CRYPTOCURRENCIES"]
