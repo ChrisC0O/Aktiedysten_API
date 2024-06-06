@@ -379,7 +379,11 @@ class AktiedystenAPI:
 
         if markets_to_exclude is not None:
             for i in markets_to_exclude:
-                markets.remove(i)
+                try:
+                    markets.remove(i)
+                except ValueError:
+                    raise ValueError(
+                        f"Error [{i}] cannot be executed because it does not exist.")
 
         for i in markets:
             marked_payload += f'%22{i}%22%2C'
