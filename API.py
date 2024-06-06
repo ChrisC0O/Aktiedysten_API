@@ -26,7 +26,7 @@ class AktiedystenAPI:
             raise ValueError(
                 f"Error password or username not correct.")
 
-        # Finds game PortfolioId
+        # Finds game PortfolioId and captures relevant data.
         games_id_json = json.loads(self.s.get("https://aktiedysten.dk/a/my_games").text)
 
         for elements in games_id_json:
@@ -49,11 +49,13 @@ class AktiedystenAPI:
             raise ValueError(
                 f"Error the game [{game}] does not exist.")
 
+
     def make_unix_end_day(self, days):
-        return time.time() + (days * 86400)
+        return time.time() + (days * 86400)  # 86400 is how many seconds in a day.
 
     def url_encode(self, text):
         return urllib.parse.quote(text, encoding="utf-8")
+
 
     def amount_to_sum(self, BuyWithAmount, data, minus):
 
@@ -134,7 +136,7 @@ class AktiedystenAPI:
         stock_data = self.s.get(
             f"https://aktiedysten.dk/a/trade_portfolio_options?portfolio_id={self.portfolio_id}&exchange={exchange}&ticker={ticker}")
 
-        if not stock_data.status_code == 200:
+        if stock_data.status_code != 200:
             raise ValueError(
                 f"Error Ticker['{ticker}'] or Exchange['{exchange}'] does not exist.")
 
@@ -152,6 +154,7 @@ class AktiedystenAPI:
             return None
 
         rq = '{"PortfolioId":!"#,"Exchange":"€%&","Ticker":"/()","BuyWithAmount":=?!,"DoEnqueue":false}'
+
         rq = rq.replace('!"#', str(self.portfolio_id))
         rq = rq.replace("€%&", exchange)
         rq = rq.replace("/()", ticker)
@@ -160,33 +163,23 @@ class AktiedystenAPI:
         buy_data = {
             "rq": rq}
 
-        buy_order = self.s.post("https://aktiedysten.dk/a/trade", buy_data)
+        if self.s.post("https://aktiedysten.dk/a/trade", buy_data).status_code == 200:
+            confirmed_bool = True
 
-        if buy_order.status_code == 200:
-            return_file = {
-                "Confirmed": True,
-                "Game": self.game_being_played,
-                "Stock": ticker,
-                "Exchange": exchange,
-                "OrderInStock": buy_with_amount_amount,
-                "OrderInCurrency": buy_with_amount_currency,
-                "OrderType": "Buy"
-            }
+        else:
+            confirmed_bool = False
 
-            return return_file
+        return_file = {
+            "Confirmed": confirmed_bool,
+            "Game": self.game_being_played,
+            "Stock": ticker,
+            "Exchange": exchange,
+            "OrderInStock": float(buy_with_amount_amount),
+            "OrderInCurrency": float(buy_with_amount_currency),
+            "OrderType": "Buy"
+        }
 
-        if not buy_order.status_code == 200:
-            return_file = {
-                "Confirmed": False,
-                "Game": self.game_being_played,
-                "Stock": ticker,
-                "Exchange": exchange,
-                "OrderInStock": buy_with_amount_amount,
-                "OrderInCurrency": buy_with_amount_currency,
-                "OrderType": "Buy"
-            }
-
-            return return_file
+        return return_file
 
     def sell(self, exchange, ticker, buy_with_amount, method):
 
@@ -211,7 +204,7 @@ class AktiedystenAPI:
         stock_data = self.s.get(
             f"https://aktiedysten.dk/a/trade_portfolio_options?portfolio_id={self.portfolio_id}&exchange={exchange}&ticker={ticker}")
 
-        if not stock_data.status_code == 200:
+        if stock_data.status_code != 200:
             raise ValueError(
                 f"Error Ticker['{ticker}'] or Exchange['{exchange}'] does not exist.")
 
@@ -234,38 +227,27 @@ class AktiedystenAPI:
         buy_data = {
             "rq": rq}
 
-        sell_order = self.s.post("https://aktiedysten.dk/a/trade", buy_data)
+        if self.s.post("https://aktiedysten.dk/a/trade", buy_data).status_code == 200:
+            confirmed_bool = True
+        else:
+            confirmed_bool = False
 
-        if sell_order.status_code == 200:
-            return_file = {
-                "Confirmed": True,
-                "Game": self.game_being_played,
-                "Stock": ticker,
-                "Exchange": exchange,
-                "OrderInStock": buy_with_amount_amount,
-                "OrderInCurrency": buy_with_amount_currency,
-                "OrderType": "Sale"
-            }
+        return_file = {
+            "Confirmed": confirmed_bool,
+            "Game": self.game_being_played,
+            "Stock": ticker,
+            "Exchange": exchange,
+            "OrderInStock": float(buy_with_amount_amount),
+            "OrderInCurrency": float(buy_with_amount_currency),
+            "OrderType": "Sell"
+        }
 
-            return return_file
-
-        if not sell_order.status_code == 200:
-            return_file = {
-                "Confirmed": False,
-                "Game": self.game_being_played,
-                "Stock": ticker,
-                "Exchange": exchange,
-                "OrderInStock": buy_with_amount_amount,
-                "OrderInCurrency": buy_with_amount_currency,
-                "OrderType": "Sale"
-            }
-
-            return return_file
+        return return_file
 
     def liquidate_game(self):
 
         """
-        Liquidates your portfolio
+        Liquidates your portfolio.
         :return: Returns order information
         """
 
