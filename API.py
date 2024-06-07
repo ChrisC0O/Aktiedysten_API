@@ -57,42 +57,37 @@ class AktiedystenAPI:
         return urllib.parse.quote(text, encoding="utf-8")
 
 
-    def amount_to_sum(self, BuyWithAmount, data, minus):
+    def amount_to_sum(self, BuyWithAmount, stock_data, minus):
 
         """
         Used for converting "STOCK" to "CURRENCY"
         :param BuyWithAmount: Amount in "STOCK"
-        :param data: Data about the "STOCK"
+        :param stock_data: Data about the "STOCK"
         :param minus: If True the brokerage_sum will be subtracted from the final price
         :return: The price if the amount of "STOCK" input
         """
 
-        data = json.loads(data.text)
+        stock_data = json.loads(stock_data.text)
 
-        price = float(data["StockRateInGameCurrency"])
+        price = float(stock_data["StockRateInGameCurrency"])
         user_input = float(BuyWithAmount)
-        brokeragePct = float(data["BrokeragePct"])
+        brokerage_pct = float(stock_data["BrokeragePct"])
 
-        if str(brokeragePct) == 0:
+        if brokerage_pct == 0.0:
             whole_price = user_input * price
-
             return whole_price
 
-        if minus == False:
-            whole_price = user_input * price
-            y = whole_price / 100
-            brokerage_sum = y * brokeragePct
+        whole_price = user_input * price
+        y = whole_price / 100
+        brokerage_sum = y * brokerage_pct
+
+        if minus is False:
             final_price = brokerage_sum + whole_price
 
-            return final_price
-
-        if minus == True:
-            whole_price = user_input * price
-            y = whole_price / 100
-            brokerage_sum = y * brokeragePct
+        if minus is True:
             final_price = whole_price - brokerage_sum
 
-            return final_price
+        return final_price
 
     def sum_to_amount(self, BuyWithAmount, data):
 
@@ -108,9 +103,7 @@ class AktiedystenAPI:
         currency = float(data["StockRateInGameCurrency"])
         user_input = float(BuyWithAmount)
 
-        new_amount = user_input / currency
-
-        return new_amount
+        return user_input / currency
 
     def buy(self, exchange, ticker, buy_with_amount, method):
 
@@ -134,7 +127,8 @@ class AktiedystenAPI:
                 f"Error CURRENCY or STOCK not spelled right")
 
         stock_data = self.s.get(
-            f"https://aktiedysten.dk/a/trade_portfolio_options?portfolio_id={self.portfolio_id}&exchange={exchange}&ticker={ticker}")
+            f"https://aktiedysten.dk/a/trade_portfolio_options?portfolio_id={self.portfolio_id}"
+            f"&exchange={exchange}&ticker={ticker}")
 
         if stock_data.status_code != 200:
             raise ValueError(
