@@ -53,17 +53,16 @@ class AktiedystenAPI:
     def make_unix_end_day(self, days):
         return time.time() + (days * 86400)  # 86400 is how many seconds in a day.
 
-    
     @staticmethod
     def url_encode(self, text):
         return urllib.parse.quote(text, encoding="utf-8")
 
-
-    def amount_to_sum(self, BuyWithAmount, stock_data, minus):
+    @staticmethod
+    def stock_to_currency(buy_with_amount, stock_data, minus):
 
         """
         Used for converting "STOCK" to "CURRENCY"
-        :param BuyWithAmount: Amount in "STOCK"
+        :param buy_with_amount: Amount in "STOCK"
         :param stock_data: Data about the "STOCK"
         :param minus: If True the brokerage_sum will be subtracted from the final price
         :return: The price if the amount of "STOCK" input
@@ -72,7 +71,7 @@ class AktiedystenAPI:
         stock_data = json.loads(stock_data.text)
 
         price = float(stock_data["StockRateInGameCurrency"])
-        user_input = float(BuyWithAmount)
+        user_input = float(buy_with_amount)
         brokerage_pct = float(stock_data["BrokeragePct"])
 
         if brokerage_pct == 0.0:
@@ -91,11 +90,12 @@ class AktiedystenAPI:
 
         return final_price
 
-    def sum_to_amount(self, BuyWithAmount, data):
+    @staticmethod
+    def currency_to_stock(buy_with_amount, data):
 
         """
         Used for converting "CURRENCY" to "STOCK"
-        :param BuyWithAmount: Amount in "CURRENCY"
+        :param buy_with_amount: Amount in "CURRENCY"
         :param data: Data about the "STOCK"
         :return: The amount of "STOCK" converted from "CURRENCY"
         """
@@ -103,7 +103,7 @@ class AktiedystenAPI:
         data = json.loads(data.text)
 
         currency = float(data["StockRateInGameCurrency"])
-        user_input = float(BuyWithAmount)
+        user_input = float(buy_with_amount)
 
         return user_input / currency
 
@@ -138,11 +138,11 @@ class AktiedystenAPI:
 
         if method == "CURRENCY":
             buy_with_amount_currency = buy_with_amount
-            buy_with_amount_amount = str(self.sum_to_amount(buy_with_amount, stock_data))
+            buy_with_amount_amount = str(self.currency_to_stock(buy_with_amount, stock_data))
             buy_with_amount = buy_with_amount_currency
 
         if method == "STOCK":
-            buy_with_amount_currency = str(self.amount_to_sum(buy_with_amount, stock_data, False))
+            buy_with_amount_currency = str(self.stock_to_currency(buy_with_amount, stock_data, False))
             buy_with_amount_amount = buy_with_amount
             buy_with_amount = buy_with_amount_currency
 
@@ -206,11 +206,11 @@ class AktiedystenAPI:
 
         if method == "CURRENCY":
             buy_with_amount_currency = buy_with_amount
-            buy_with_amount_amount = str(self.sum_to_amount(buy_with_amount, stock_data))
+            buy_with_amount_amount = str(self.currency_to_stock(buy_with_amount, stock_data))
             buy_with_amount = buy_with_amount_amount
 
         if method == "STOCK":
-            buy_with_amount_currency = str(self.amount_to_sum(buy_with_amount, stock_data, True))
+            buy_with_amount_currency = str(self.stock_to_currency(buy_with_amount, stock_data, True))
             buy_with_amount_amount = buy_with_amount
             buy_with_amount = buy_with_amount_amount
 
