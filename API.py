@@ -49,10 +49,12 @@ class AktiedystenAPI:
             raise ValueError(
                 f"Error the game [{game}] does not exist.")
 
-
+    @staticmethod
     def make_unix_end_day(self, days):
         return time.time() + (days * 86400)  # 86400 is how many seconds in a day.
 
+    
+    @staticmethod
     def url_encode(self, text):
         return urllib.parse.quote(text, encoding="utf-8")
 
