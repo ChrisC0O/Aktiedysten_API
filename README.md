@@ -50,7 +50,15 @@ account.sell_all("ticker")
 
 All functions returns order json:
 ```py
-{'Confirmed': True, 'Game': 'GAME', 'Stock': 'BTC', 'Exchange': 'CRYPTO', 'OrderInStock': '10', 'OrderInCurrency': '2013118.9090987504', 'OrderType': 'Buy'}
+{
+ 'Confirmed': True,
+ 'Game': 'GAME',
+ 'Stock': 'BTC',
+ 'Exchange': 'CRYPTO',
+ 'OrderInStock': '10',
+ 'OrderInCurrency': '2013118.9090987504',
+ 'OrderType': 'Buy'
+}
 ```
 
 ## Simble tradebot exsample:
